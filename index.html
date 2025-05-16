@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Retro Fighting Game</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Press Start 2P', cursive;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #1a1a1a;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      padding: 20px;
+    }
+
+    .game-container {
+      position: relative;
+      width: 1024px;
+      height: 576px;
+      border: 8px solid white;
+      box-shadow: 0 0 20px #000;
+    }
+
+    canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .ui-wrapper {
+      position: absolute;
+      top: 60px;
+      left: 20px;
+      right: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 10;
+    }
+
+    .health-bar-wrapper {
+      position: relative;
+      width: 100%;
+      height: 30px;
+      background-color: red;
+      border: 4px solid white;
+    }
+
+    #playerHealth,
+    #enemyHealth {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      background-color: #818cf8;
+    }
+
+    #playerHealth {
+      right: 0;
+      width: 100%;
+    }
+
+    #enemyHealth {
+      left: 0;
+      width: 100%;
+    }
+
+    #timer {
+      width: 100px;
+      height: 50px;
+      background-color: black;
+      color: white;
+      border: 4px solid white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 20px;
+      flex-shrink: 0;
+    }
+
+    #displayText {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      background-color: rgba(0, 0, 0, 0.5);
+      color: white;
+      font-size: 24px;
+      z-index: 20;
+    }
+
+    .menu-toggle {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      z-index: 40;
+    }
+
+    .menu-toggle button {
+      background-color: black;
+      color: white;
+      border: 2px solid white;
+      padding: 10px;
+      font-size: 10px;
+      cursor: pointer;
+    }
+
+    .game-controls {
+      position: absolute;
+      top: 60px;
+      left: 10px;
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 30;
+    }
+
+    .game-controls button {
+      background-color: black;
+      color: white;
+      border: 2px solid white;
+      padding: 10px;
+      font-size: 10px;
+      cursor: pointer;
+    }
+
+    .game-controls button:hover {
+      background-color: #333;
+    }
+
+    /* Instruction Modal */
+    .instruction-modal {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      color: white;
+      z-index: 50;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 40px;
+    }
+
+    .instruction-box {
+      background-color: #000;
+      border: 4px solid white;
+      padding: 20px;
+      max-width: 600px;
+      width: 90%;
+      text-align: left;
+    }
+
+    .instruction-box h2 {
+      font-size: 16px;
+      margin-bottom: 20px;
+      color: #00ffcc;
+    }
+
+    .instruction-box ul {
+      list-style: none;
+      padding-left: 0;
+      font-size: 10px;
+      line-height: 2;
+    }
+
+    .instruction-box button {
+      margin-top: 20px;
+      background-color: black;
+      color: white;
+      border: 2px solid white;
+      padding: 10px;
+      font-size: 10px;
+      cursor: pointer;
+    }
+
+    .instruction-box button:hover {
+      background-color: #333;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="game-container">
+    <!-- Menu Toggle -->
+    <div class="menu-toggle">
+      <button onclick="toggleMenu()">☰ MENU</button>
+    </div>
+
+    <!-- Game Controls -->
+    <div class="game-controls" id="gameControls">
+      <button onclick="startGame()">START</button>
+      <button onclick="pauseGame()">PAUSE</button>
+      <button onclick="resumeGame()">PLAY</button>
+      <button onclick="exitGame()">EXIT</button>
+      <button onclick="showInstructions()">INSTRUCTIONS</button>
+    </div>
+
+    <!-- UI Layer -->
+    <div class="ui-wrapper">
+      <div class="health-bar-wrapper">
+        <div id="playerHealth"></div>
+      </div>
+      <div id="timer">10</div>
+      <div class="health-bar-wrapper">
+        <div id="enemyHealth"></div>
+      </div>
+    </div>
+
+    <!-- Display Text -->
+    <div id="displayText">Tie</div>
+
+    <!-- Instruction Modal -->
+    <div class="instruction-modal" id="instructionModal">
+      <div class="instruction-box">
+        <h2>🎮 Controls</h2>
+        <ul>
+          <li>Player 1 Move: A (left), D (right)</li>
+          <li>Player 1 Jump: W</li>
+          <li>Player 1 Attack: Space</li>
+          <li>Player 2 Move: ← (left), → (right)</li>
+          <li>Player 2 Jump: ↑</li>
+          <li>Player 2 Attack: Enter</li>
+        </ul>
+        <button onclick="hideInstructions()">CLOSE</button>
+      </div>
+    </div>
+
+    <!-- Game Canvas -->
+    <canvas id="gameCanvas" width="1024" height="576"></canvas>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"
+    integrity="sha512-H6cPm97FAsgIKmlBA4s774vqoN24V5gSQL4yBTDOY2su2DeXZVhQPxFK4P6GPdnZqM9fg1G3cMv5wD7e6cFLZQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/classes.js"></script>
+  <script src="index.js"></script>
+
+  <!-- Control Logic -->
+  <script>
+    let gamePaused = false;
+    let menuVisible = false;
+
+    function toggleMenu() {
+      const menu = document.getElementById('gameControls');
+      menuVisible = !menuVisible;
+      menu.style.display = menuVisible ? 'flex' : 'none';
+    }
+
+    function startGame() {
+      document.getElementById("displayText").style.display = "none";
+      console.log("Game Started");
+      // Reset health, characters, timer, etc.
+    }
+
+    function pauseGame() {
+      if (!gamePaused) {
+        gamePaused = true;
+        cancelAnimationFrame(animationId); // animationId must be declared in index.js
+        console.log("Game Paused");
+      }
+    }
+
+    function resumeGame() {
+      if (gamePaused) {
+        gamePaused = false;
+        animate(); // Must restart animation loop from index.js
+        console.log("Game Resumed");
+      }
+    }
+
+    function exitGame() {
+      if (confirm("Are you sure you want to exit the game?")) {
+        window.location.reload(); // Reload the page
+      }
+    }
+
+    function showInstructions() {
+      document.getElementById("instructionModal").style.display = "flex";
+    }
+
+    function hideInstructions() {
+      document.getElementById("instructionModal").style.display = "none";
+    }
+  </script>
+</body>
+
+</html>

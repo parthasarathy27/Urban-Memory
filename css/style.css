@@ -1,0 +1,135 @@
+* {
+    box-sizing: border-box;
+    font-family: 'Press Start 2P', cursive;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: black;
+    color: white;
+    overflow: hidden;
+}
+
+.game-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+}
+
+.hud {
+    display: flex;
+    width: 100%;
+    padding: 20px;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.health-bar {
+    position: relative;
+    flex: 1;
+    height: 30px;
+    border: 4px solid white;
+}
+
+.health-bar.player {
+    border-right: none;
+}
+
+.health-bar.enemy {
+    border-left: none;
+}
+
+.health-bg {
+    background-color: red;
+    width: 100%;
+    height: 100%;
+}
+
+.health-fill {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    background: #818cf8;
+}
+
+#playerHealth {
+    right: 0;
+    width: 100%;
+}
+
+#enemyHealth {
+    left: 0;
+    width: 100%;
+}
+
+#timer {
+    background-color: black;
+    width: 100px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    border: 4px solid white;
+    flex-shrink: 0;
+    margin: 0 20px;
+}
+
+#displayText {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+}
+
+canvas {
+    flex-grow: 1;
+    width: 100%;
+    background-color: #333;
+}
+
+.controls {
+    position: absolute;
+    bottom: 20px;
+    display: flex;
+    gap: 15px;
+}
+
+button {
+    padding: 10px 20px;
+    font-family: 'Press Start 2P', cursive;
+    background: white;
+    color: black;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+button:hover {
+    background: #ccc;
+}
+
+@media (max-width: 768px) {
+    .hud {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    #timer {
+        margin: 10px 0;
+    }
+
+    .controls {
+        flex-direction: column;
+        align-items: center;
+    }
+}
