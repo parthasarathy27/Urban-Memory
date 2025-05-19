@@ -120,28 +120,34 @@
       cursor: pointer;
     }
 
-    .game-controls {
-      position: absolute;
-      top: 60px;
-      left: 10px;
-      display: none;
-      flex-direction: column;
-      gap: 10px;
-      z-index: 30;
-    }
+.game-controls {
+  position: absolute;
+  top: 60px;
+  left: 10px;
+  right: 10px;
+  display: flex;
+  justify-content: space-between;
+  z-index: 30;
+}
 
-    .game-controls button {
-      background-color: black;
-      color: white;
-      border: 2px solid white;
-      padding: 10px;
-      font-size: 10px;
-      cursor: pointer;
-    }
+    .left-controls,
+.right-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
 
-    .game-controls button:hover {
-      background-color: #333;
-    }
+.game-controls button {
+  background-color: black;
+  color: white;
+  border: 2px solid white;
+  padding: 10px;
+  font-size: 10px;
+  cursor: pointer;
+}
+.game-controls button:hover {
+  background-color: #333;
+}
 
     /* Instruction Modal */
     .instruction-modal {
@@ -205,14 +211,21 @@
       <button onclick="toggleMenu()">☰ MENU</button>
     </div>
 
-    <!-- Game Controls -->
-    <div class="game-controls" id="gameControls">
-      <button onclick="startGame()">START</button>
-      <button onclick="pauseGame()">PAUSE</button>
-      <button onclick="resumeGame()">PLAY</button>
-      <button onclick="exitGame()">EXIT</button>
-      <button onclick="showInstructions()">INSTRUCTIONS</button>
-    </div>
+<!-- Game Controls -->
+<div class="game-controls" id="gameControls">
+  <!-- Left Side Controls -->
+  <div class="left-controls">
+    <button onclick="resumeGame()">PLAY</button>
+    <button onclick="showInstructions()">INSTRUCTIONS</button>
+    <button onclick="exitGame()">EXIT</button>
+  </div>
+  <!-- Right Side Controls -->
+  <div class="right-controls">
+    <button onclick="startGame()">START</button>
+    <button onclick="pauseGame()">PAUSE</button>
+  </div>
+</div>
+
 
     <!-- UI Layer -->
     <div class="ui-wrapper">
